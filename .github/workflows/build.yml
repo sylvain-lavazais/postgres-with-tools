@@ -7,6 +7,7 @@ on:
 env:
   IMAGE_NAME: "postgres-with-tools"
   IMAGE_TAG: "15.7"
+  PLATFORM_LIST: "linux/amd64,linux/arm/v7,linux/arm64"
 
 jobs:
   build:
@@ -27,12 +28,13 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
         with:
-          platforms: linux/amd64,linux/arm/v7,linux/arm64
+          platforms: ${{ env.PLATFORM_LIST }}
 
       - name: build the image
         run: |
           docker buildx build \
           --build-arg PG_VERSION=${{ env.IMAGE_TAG }} \
           --tag ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} \
+          --platform ${{ env.PLATFORM_LIST }}
           --push \
           .

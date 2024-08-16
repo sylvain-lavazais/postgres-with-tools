@@ -1,0 +1,32 @@
+name: build and push image
+
+on:
+  push:
+    branches: [ main ]
+
+env:
+  IMAGE_PATH: "slavazais"
+  IMAGE_NAME: "postgres-with-tools"
+  IMAGE_TAG: "15.7"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          platforms: linux/amd64,linux/arm/v7,linux/arm64
+
+      - name: build the image
+        run: |
+          docker buildx build \
+          --build-arg PG_VERSION={{ env.IMAGE_TAG }}
+          --tag {{ env.IMAGE_PATH }}/{{ env.IMAGE_NAME }}:{{ env.IMAGE_TAG }} \
+          .

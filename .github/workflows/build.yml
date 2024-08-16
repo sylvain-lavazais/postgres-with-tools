@@ -27,6 +27,6 @@ jobs:
       - name: build the image
         run: |
           docker buildx build \
-          --build-arg PG_VERSION={{ env.IMAGE_TAG }}
+          --build-arg PG_VERSION={{ env.IMAGE_TAG }} \
           --tag {{ env.IMAGE_PATH }}/{{ env.IMAGE_NAME }}:{{ env.IMAGE_TAG }} \
           .

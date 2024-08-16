@@ -3,16 +3,24 @@ name: build and push image
 on:
   push:
     branches: [ main ]
+  workflow_dispatch:
+    inputs:
+      pg-version:
+        description: "postgres version (default 15.7)"
+        required: true
 
 env:
   IMAGE_NAME: "postgres-with-tools"
-  IMAGE_TAG: "15.7"
   PLATFORM_LIST: "linux/amd64,linux/arm/v7,linux/arm64"
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: setup env var
+        run: |
+          echo "IMAGE_TAG=${{ inputs.pg-version || '15.7' }}" >> $GITHUB_ENV
+
       - name: checkout code
         uses: actions/checkout@v4
 
